@@ -18,12 +18,14 @@ public class HeroController : MonoBehaviour
     private Transform mRaycastPoint;
     private CapsuleCollider2D mCollider;
     private Vector3 mRaycastPointCalculated;
+    private Animator mAnimator;
 
     void Start()
     {
         mRb = GetComponent<Rigidbody2D>();
         mRaycastPoint = transform.Find("RaycastPoint");
         mCollider = GetComponent<CapsuleCollider2D>();
+        mAnimator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -35,19 +37,13 @@ public class HeroController : MonoBehaviour
             mRb.velocity.y
         );
 
-        if (mIsJumpPressed) 
+        IsJumping();
+
+        if (mIsJumpPressed)
         {
             // Comenzar salto
             Jump();
         }
-
-        mRaycastPointCalculated = new Vector3(
-            mCollider.bounds.center.x,
-            mCollider.bounds.center.y - mCollider.bounds.extents.y,
-            transform.position.z
-        );
-
-        IsJumping();
 
         // Informativo
         Debug.DrawRay(
@@ -59,7 +55,16 @@ public class HeroController : MonoBehaviour
 
     void Update()
     {
-        mMovement = Input.GetAxis("Horizontal"); 
+        mMovement = Input.GetAxis("Horizontal");
+
+        if (mMovement > 0f || mMovement < 0f )
+        {
+            mAnimator.SetBool("isMoving", true);
+        }else
+        {
+            mAnimator.SetBool("isMoving", false);
+        }
+
         //mIsJumpPressed = Input.GetKeyDown(KeyCode.Space);
         if (!mIsJumping && Input.GetKeyDown(KeyCode.Space))
         {
@@ -77,6 +82,12 @@ public class HeroController : MonoBehaviour
 
     private void IsJumping()
     {
+        mRaycastPointCalculated = new Vector3(
+            mCollider.bounds.center.x,
+            mCollider.bounds.center.y - mCollider.bounds.extents.y,
+            transform.position.z
+        );
+
         RaycastHit2D hit = Physics2D.Raycast(
             mRaycastPointCalculated,// Posicion origen
             Vector2.down,// Direccion
