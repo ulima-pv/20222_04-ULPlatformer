@@ -13,7 +13,7 @@ public class HeroController : MonoBehaviour
 
     private float mMovement = 0f;    
     private bool mIsJumpPressed = false;
-    private bool mIsJumping = true;
+    private bool mIsJumping = false;
     private Rigidbody2D mRb;
     private Transform mRaycastPoint;
     private CapsuleCollider2D mCollider;
@@ -36,6 +36,15 @@ public class HeroController : MonoBehaviour
             mMovement * speed,
             mRb.velocity.y
         );
+
+        if (mRb.velocity.x != 0f)
+        {
+            transform.localScale = new Vector3(
+                mRb.velocity.x < 0f ? -1f : 1f,
+                transform.localScale.y,
+                transform.localScale.z
+            );
+        }
 
         IsJumping();
 
@@ -70,6 +79,16 @@ public class HeroController : MonoBehaviour
         {
             mIsJumpPressed = true;
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Animacion de disparo
+            mAnimator.SetTrigger("shoot");
+        }
+
+
+        mAnimator.SetBool("isJumping", mIsJumping);
+        mAnimator.SetBool("isFalling", mRb.velocity.y < 0f);
 
     }
 

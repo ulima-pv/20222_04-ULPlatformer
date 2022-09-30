@@ -910,7 +910,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 6
   jumpSpeed: 7
-  raycastDistance: 0.075
+  raycastDistance: 0.09
 --- !u!95 &1352191963
 Animator:
   serializedVersion: 4
