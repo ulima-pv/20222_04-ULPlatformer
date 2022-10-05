@@ -10,6 +10,8 @@ public class HeroController : MonoBehaviour
     private float jumpSpeed;
     [SerializeField]
     private float raycastDistance;
+    [SerializeField]
+    private GameObject prefabBullet;
 
     private float mMovement = 0f;    
     private bool mIsJumpPressed = false;
@@ -19,6 +21,7 @@ public class HeroController : MonoBehaviour
     private CapsuleCollider2D mCollider;
     private Vector3 mRaycastPointCalculated;
     private Animator mAnimator;
+    private Transform mBulletSpawnPoint;
 
     void Start()
     {
@@ -26,6 +29,7 @@ public class HeroController : MonoBehaviour
         mRaycastPoint = transform.Find("RaycastPoint");
         mCollider = GetComponent<CapsuleCollider2D>();
         mAnimator = GetComponent<Animator>();
+        mBulletSpawnPoint = transform.Find("BulletSpawnPoint");
     }
 
     void FixedUpdate()
@@ -84,12 +88,11 @@ public class HeroController : MonoBehaviour
         {
             // Animacion de disparo
             mAnimator.SetTrigger("shoot");
+            Fire();
         }
-
 
         mAnimator.SetBool("isJumping", mIsJumping);
         mAnimator.SetBool("isFalling", mRb.velocity.y < 0f);
-
     }
 
     private void Jump()
@@ -117,5 +120,19 @@ public class HeroController : MonoBehaviour
             // Hay una colision, esta en el suelo
             mIsJumping = false;
         }
+    }
+
+    private void Fire()
+    {
+        Instantiate(
+            prefabBullet, 
+            mBulletSpawnPoint.position, 
+            Quaternion.identity
+        );
+    }
+
+    public int GetPointDirection()
+    {
+        return (int)transform.localScale.x;
     }
 }
